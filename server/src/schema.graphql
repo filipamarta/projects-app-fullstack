@@ -1,0 +1,33 @@
+type Query {
+  feed: [Project!]!
+  projectById(projectId: ID!): Project!
+  allTasks: [Task!]!
+}
+
+type Mutation {
+  createProject(title: String!, description: String!): Project!
+  updateProject(projectId: ID!, title: String!, description: String!): Project!
+  deleteProject(projectId: ID!): Project!
+  createTask(title: String!, time: String!, projectId: ID!, ): Task!
+  deleteTask(taskId: ID!): Task!
+}
+
+type Project {
+  id: ID!
+  title: String!
+  description: String!
+  totalTime: Int!
+  tasks: [Task!]!
+}
+
+type Task {
+  id: ID!
+  title: String!
+  time: Int!
+  project: Project!
+}
+
+type Subscription {
+  newProject: Project
+  newTask: Task
+}

@@ -1,0 +1,15 @@
+
+type Project {
+  id: ID! @id 
+  title: String!
+  description: String!
+  totalTime: Int! @default(value: 0)
+  tasks: [Task!]!
+}
+
+type Task {
+  id: ID! @id
+  title: String!
+  time: Int!
+  project: Project!
+}

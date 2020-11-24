@@ -22,6 +22,14 @@ export const UPDATE_PROJECT = gql`
   }
 `;
 
+export const DELETE_PROJECT = gql`
+  mutation deleteProject($projectId: ID!) {
+    deleteProject(projectId: $projectId) {
+      title
+    }
+  }
+`;
+
 const ProjectItem = ({ project }) => {
   const [isEditClicked, setIsEditClicked] = useState(false);
   const [isEditError, setIsEditError] = useState(false);

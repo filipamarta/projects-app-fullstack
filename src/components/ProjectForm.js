@@ -64,14 +64,20 @@ const ProjectForm = (props) => {
         <Mutation
           mutation={CREATE_PROJECT}
           variables={{ title, description }}
-          update={(store, { data: {createProject } }) => {
-            console.log(createProject);
-            const projectData = store.readQuery({ query: GET_PROJECTS });
-            projectData.feed.projects.unshift(createProject);
-            store.writeQuery({
-              query: GET_PROJECTS
-            });
-          }}
+          refetchQueries={
+            [
+              {
+                query: gql`
+                  {
+                    feed {
+                      id
+                      title
+                      description
+                    }
+                  }
+                `
+              }
+            ]}
         >
           {(createProject) => (
             <Button onClick={createProject} type="submit">

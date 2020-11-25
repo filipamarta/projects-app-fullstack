@@ -1,6 +1,7 @@
 
 type Project {
   id: ID! @id 
+  createdAt: DateTime! @createdAt
   title: String!
   description: String!
   totalTime: Int! @default(value: 0)

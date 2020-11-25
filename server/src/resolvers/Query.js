@@ -4,12 +4,12 @@ function feed(parent, args, context, info) {
 }
 
 
-function projectById(root, { projectId }, { prisma }) {
-  return prisma.project({ id: projectId });
+function projectById(root, { projectId }, context) {
+  return context.prisma.project({ id: projectId });
 }
 
-function allTasks(root, args, { prisma }) {
-  return prisma.tasks();
+function allTasks(root, args, context) {
+  return context.prisma.tasks();
 }
 
 module.exports = {

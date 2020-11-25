@@ -3,6 +3,7 @@ import { Card, Col, Button, Form } from "react-bootstrap";
 /* import { ProjectContext } from "../context/ProjectContext"; */
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
+import { withRouter } from 'react-router';
 
 export const UPDATE_PROJECT = gql`
   mutation updateProject(
@@ -30,7 +31,8 @@ export const DELETE_PROJECT = gql`
   }
 `;
 
-const ProjectItem = ({ project }) => {
+const ProjectItem = (props) => {
+  const project = props.project;
   const [isEditClicked, setIsEditClicked] = useState(false);
   const [isEditError, setIsEditError] = useState(false);
   const [editTitle, setEditTitle] = useState(project.title);
@@ -134,17 +136,22 @@ const ProjectItem = ({ project }) => {
           <Card.Body>
             <Card.Title>{project.title}</Card.Title>
             <Card.Text>{project.description}</Card.Text>
-            <Button
-              variant="primary"
-              className="delete-btn mr-4"
-              type="button"
-              name="delete"
-              onClick={() => {
-                //deleteProject(project.id);
-              }}
-            >
-              delete
-            </Button>
+            <Mutation mutation={DELETE_PROJECT} variables={{ id: project.id }}>
+              {(deleteProject, { loading, error, data }) => (
+                <Button
+                  variant="primary"
+                  className="delete-btn mr-4"
+                  type="button"
+                  name="delete"
+                  onClick={
+                    () => deleteProject({ variables: { id: project.id } })
+                    //deleteProject(project.id);
+                  }
+                >
+                  delete
+                </Button>
+              )}
+            </Mutation>
             <Button
               variant="primary"
               className="edit-btn"
@@ -163,7 +170,10 @@ const ProjectItem = ({ project }) => {
               type="button"
               name="projectDetails"
               onClick={() => {
-                //projectDetails(project.id)
+                return props.history.push({
+                  pathname: `/project/${project.id}`,
+                  state: { project: project },
+                });
               }}
             >
               go to project
@@ -175,4 +185,4 @@ const ProjectItem = ({ project }) => {
   );
 };
 
-export default ProjectItem;
+export default withRouter(ProjectItem);

@@ -119,9 +119,25 @@ const ProjectItem = (props) => {
           <Card.Body>
             <Card.Title>{project.title}</Card.Title>
             <Card.Text>{project.description}</Card.Text>
-            <Mutation mutation={DELETE_PROJECT} variables={{
-                    projectId: project.id,
-                  }}>
+            <Mutation
+              mutation={DELETE_PROJECT}
+              variables={{
+                projectId: project.id,
+              }}
+              refetchQueries={[
+                {
+                  query: gql`
+                    {
+                      projects {
+                        id
+                        title
+                        description
+                      }
+                    }
+                  `,
+                },
+              ]}
+            >
               {(deleteProject, { loading, error, data }) => {
                 console.log(data);
                 return (

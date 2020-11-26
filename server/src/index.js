@@ -29,5 +29,5 @@ const server = new GraphQLServer({
     pubsub
   },
 });
-
-server.start(() => console.log(`Server is running on http://localhost:4000`));
+const url = "https://eu1.prisma.sh/filipa-marta-e131a6/projects-app/dev"
+server.start(url, () => console.log(`Server is running on http://localhost:4000`));

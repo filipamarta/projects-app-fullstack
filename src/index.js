@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import "./index.scss";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
@@ -11,7 +11,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { BrowserRouter } from "react-router-dom";
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000",
+  uri: "https://eu1.prisma.sh/filipa-marta-e131a6/projects-app/dev",
 });
 
 const client = new ApolloClient({

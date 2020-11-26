@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Button } from "react-bootstrap";
-//import { TaskContext } from "../context/TaskContext";
+
 
 const Task = ({ task }) => {
-  //const { deleteTask } = useContext(TaskContext);
+
 
   return (
     <tr>

@@ -1,6 +1,7 @@
 type Query {
   feed: [Project!]!
   projectById(projectId: ID!): Project!
+  allTasksByProjectId(projectId: ID!): [Task!]!
   allTasks: [Task!]!
 }
 
@@ -8,7 +9,7 @@ type Mutation {
   createProject(title: String!, description: String!): Project!
   updateProject(projectId: ID!, title: String!, description: String!): Project!
   deleteProject(projectId: ID!): Project!
-  createTask(title: String!, time: String!, projectId: ID!, ): Task!
+  createTask(title: String!, time: Int!, projectId: ID!, ): Task!
   deleteTask(taskId: ID!): Task!
 }
 

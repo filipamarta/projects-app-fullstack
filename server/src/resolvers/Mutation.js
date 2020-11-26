@@ -37,6 +37,9 @@ function deleteProject(parent, args, context, info) {
   });
   context.pubsub.publish("NEW_PROJECT", newProject);
   return newProject; */
+  console.log( context.prisma.deleteProject({
+    where: { id: args.projectId },
+  }))
   return context.prisma.deleteProject({
     where: { id: args.projectId },
   });

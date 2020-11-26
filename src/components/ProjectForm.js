@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Form, Button, Col } from "react-bootstrap";
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
-import { GET_PROJECTS } from './MainPage'
+import { GET_PROJECTS } from "./MainPage";
 
 export const CREATE_PROJECT = gql`
   mutation createProject($title: String!, $description: String!) {
-    createProject(title: $title, description: $description) {
+    createProject(data: { title: $title, description: $description }) {
       id
       title
       description
@@ -40,12 +40,12 @@ const ProjectForm = (props) => {
       lg={{ span: 6, offset: 3 }}
     >
       <Form onSubmit={handleSubmit} className="mb-5">
-        <h4 className="mb-4">Create a project:</h4>
+        <h4 className="mb-4">Create your project here:</h4>
         <Form.Group controlId="titleInput">
           <Form.Control
             type="text"
             rows="1"
-            placeholder="Project Title"
+            placeholder="Project title"
             name="title"
             value={title}
             onChange={handleChange}
@@ -55,7 +55,7 @@ const ProjectForm = (props) => {
           <Form.Control
             as="textarea"
             rows="5"
-            placeholder="Description"
+            placeholder="Project description"
             name="description"
             value={description}
             onChange={handleChange}
@@ -64,24 +64,23 @@ const ProjectForm = (props) => {
         <Mutation
           mutation={CREATE_PROJECT}
           variables={{ title, description }}
-          refetchQueries={
-            [
-              {
-                query: gql`
-                  {
-                    feed {
-                      id
-                      title
-                      description
-                    }
+          refetchQueries={[
+            {
+              query: gql`
+                {
+                  projects {
+                    id
+                    title
+                    description
                   }
-                `
-              }
-            ]}
+                }
+              `,
+            },
+          ]}
         >
           {(createProject) => (
             <Button onClick={createProject} type="submit">
-              Add Project
+              Add a new project
             </Button>
           )}
         </Mutation>

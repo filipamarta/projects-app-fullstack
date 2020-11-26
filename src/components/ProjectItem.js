@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Card, Col, Button, Form } from "react-bootstrap";
-/* import { ProjectContext } from "../context/ProjectContext"; */
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
-import { withRouter } from 'react-router';
+import { withRouter } from "react-router";
 
 export const UPDATE_PROJECT = gql`
   mutation updateProject(
@@ -12,9 +11,8 @@ export const UPDATE_PROJECT = gql`
     $description: String!
   ) {
     updateProject(
-      projectId: $projectId
-      title: $title
-      description: $description
+      where: { id: $projectId }
+      data: { title: $title, description: $description }
     ) {
       id
       title
@@ -25,8 +23,8 @@ export const UPDATE_PROJECT = gql`
 
 export const DELETE_PROJECT = gql`
   mutation deleteProject($projectId: ID!) {
-    deleteProject(projectId: $projectId) {
-      title
+    deleteProject(where: { id: $projectId }) {
+      id
     }
   }
 `;
@@ -46,21 +44,6 @@ const ProjectItem = (props) => {
     let value = event.target.value;
     name === "editTitle" ? setEditTitle(value) : setEditDescription(value);
   };
-
-  /*   const handleSubmit = (event, updateProject) => {
-    event.preventDefault();
-    if (
-      project.title !== editTitle ||
-      project.description !== editDescription
-    ) {
-      editProject(project.id, editTitle, editDescription);
-      setIsEditClicked(false);
-    } else {
-      console.log("No changes made");
-      setIsEditError(true);
-      setIsEditClicked(false);
-    }
-  }; */
 
   return (
     <Col xs={12} sm={6} md={4} lg={4}>
@@ -136,21 +119,23 @@ const ProjectItem = (props) => {
           <Card.Body>
             <Card.Title>{project.title}</Card.Title>
             <Card.Text>{project.description}</Card.Text>
-            <Mutation mutation={DELETE_PROJECT} variables={{ id: project.id }}>
-              {(deleteProject, { loading, error, data }) => (
-                <Button
-                  variant="primary"
-                  className="delete-btn mr-4"
-                  type="button"
-                  name="delete"
-                  onClick={
-                    () => deleteProject({ variables: { id: project.id } })
-                    //deleteProject(project.id);
-                  }
-                >
-                  delete
-                </Button>
-              )}
+            <Mutation mutation={DELETE_PROJECT} variables={{
+                    projectId: project.id,
+                  }}>
+              {(deleteProject, { loading, error, data }) => {
+                console.log(data);
+                return (
+                  <Button
+                    variant="primary"
+                    className="delete-btn mr-4"
+                    type="button"
+                    name="delete"
+                    onClick={() => deleteProject(project.id)}
+                  >
+                    delete
+                  </Button>
+                );
+              }}
             </Mutation>
             <Button
               variant="primary"

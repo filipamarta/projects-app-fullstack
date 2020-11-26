@@ -1,14 +1,39 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Container, Col, Row, Button, Form, Table } from "react-bootstrap";
 import Task from "./Task";
-//import { TaskContext } from "../context/TaskContext";
+import gql from "graphql-tag";
+import { Mutation, Query } from "react-apollo";
+
+export const CREATE_TASK = gql`
+  mutation createTask($title: String!, $time: Int!, $projectId: ID!) {
+    createTask(
+      data: {
+        title: $title
+        time: $time
+        project: { connect: { id: $projectId } }
+      }
+    ) {
+      title
+      time
+    }
+  }
+`;
+
+export const GET_PROJECT_TASKS = gql`
+  query tasks($projectId: ID!) {
+    tasks(where: { project: { id: $projectId } }) {
+      id
+      title
+      time
+    }
+  }
+`;
 
 const ProjectPage = (props) => {
   const { project } = props.location.state;
   const [titleTask, setTitleTask] = useState("");
   const [timeTask, setTimeTask] = useState();
   const [isInputWarning, setIsInputWarning] = useState(false);
-  //const { addTask, tasks, totalTime } = useContext(TaskContext);
 
   const handleChange = (event) => {
     let name = event.target.name;
@@ -24,14 +49,14 @@ const ProjectPage = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (titleTask.length > 0 && timeTask.length > 0) {
+    /*  if (titleTask.length > 0 && timeTask.length > 0) {
       //addTask(titleTask, timeTask);
       setTitleTask("");
       setTimeTask("");
       setIsInputWarning(false);
     } else {
       setIsInputWarning(true);
-    }
+    } */
   };
 
   return (
@@ -48,9 +73,9 @@ const ProjectPage = (props) => {
       <Row>
         <Col
           xs={12}
-          sm={{ span: 10, offset: 1 }}
-          md={{ span: 8, offset: 2 }}
-          lg={{ span: 6, offset: 3 }}
+          sm={12}
+          md={{ span: 10, offset: 1 }}
+          lg={{ span: 8, offset: 2 }}
           className="mt-3"
         >
           <h6 className="mb-3">Write your estimates (in hours) per task</h6>
@@ -91,7 +116,21 @@ const ProjectPage = (props) => {
             </Form.Row>
             <Form.Row>
               <Col xs={12}>
-                <Button type="submit">Add your estimates</Button>
+                <Mutation
+                  mutation={CREATE_TASK}
+                  variables={{
+                    title: titleTask,
+                    time: timeTask,
+                    id: project.id,
+                  }}
+                  
+                >
+                  {(createTask) => (
+                    <Button onClick={createTask} type="submit">
+                      Add your estimates
+                    </Button>
+                  )}
+                </Mutation>
               </Col>
             </Form.Row>
           </Form>
@@ -105,21 +144,35 @@ const ProjectPage = (props) => {
           lg={{ span: 8, offset: 2 }}
           className="mt-4"
         >
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Task</th>
-                <th>Estimate time</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* {tasks.map((task) => (
-                <Task key={task.id} task={task} />
-              ))} */}
-              <Task  />
-            </tbody>
-          </Table>
+          <Query
+            query={GET_PROJECT_TASKS}
+            variables={{
+              projectId: project.id,
+            }}
+          >
+            {({ loading, error, data }) => {
+              console.log(data);
+              if (loading) return <div>Fetching</div>;
+              if (error) return <div>Error</div>;
+              const tasks = data.tasks;
+              return (
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Task</th>
+                      <th>Estimate time</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tasks.map((task) => (
+                      <Task key={task.id} task={task} />
+                    ))}
+                  </tbody>
+                </Table>
+              );
+            }}
+          </Query>
         </Col>
       </Row>
     </Container>

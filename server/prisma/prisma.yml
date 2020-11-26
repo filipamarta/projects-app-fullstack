@@ -1,5 +1,5 @@
 endpoint: https://eu1.prisma.sh/filipa-marta-e131a6/projects-app/dev
-datamodel: datamodel.prisma
+datamodel: schema.prisma
 
 generate:
   - generator: javascript-client
